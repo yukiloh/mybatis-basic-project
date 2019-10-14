@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--指定以下Ⅰ、Ⅱ可以省略dao中的实体类-->
+<!--Ⅰ.namespace所映射的dao必须为全限定类名-->   <!--实际使用中，可以通过多种dao分包来实现不同的查询语句，例如a商品的dao，b商品的dao等-->
+<mapper namespace="dao.IUserDao">
+
+    <!--关于POJO与MYSQL中key不相同的应对策略-->
+    <!--当POJO与MYSQL中的key名称不相同时，pojo.username != mysql.username
+        可以有2种办法建立映射关系:
+        1.使用sql语句中的as 取别名的方式，解析速度最快
+        select id as userid,username as username,address as useradress from mybatis_test_01
+
+        2.使用<resultMap>,id为唯一标志(可随意定义),type为对应的实体类POJO(User)的全限定类名,
+            此处使用了config.xml的<typeAliases>标签下package别名(指定了account包下的所有POJO)-->
+    <resultMap id="userMapper" type="user">
+        <!--id为主键,property为POJO中的key,column为SQL中的KEY或查询语句的别名-->
+        <id property="id" column="id"/>
+        <!--result为其他的key-->
+        <result property="username" column="username"/>
+
+        <!--等等user中的参数与mysql中的列名.........-->
+    </resultMap>
+    <!--使用时需要将查询标签内的resultType换为resultMap,值为resultMap的id-->
+<!--    <select id="xxxx" resultMap="userMapper">-->
+
+
+
+    <!--查询所有-->
+    <!--Ⅱ.id名必须是dao接口类中存在的方法名-->    <!--resultType为用于封装的结果集类型,必须为全限定类名，使用的是反射-->
+    <!--或者可以在config.xml中配置aliases,使resultMap直接获取别名-->
+    <select id="findAll" resultType="user">
+        select * from mybatis_test_01
+    </select>
+
+    <!--查询单个-->
+    <select id="findUserById" resultType="account.User" parameterType="Integer">
+        select * from mybatis_test_01 where id = #{id}
+    </select>
+    <!--#{id}的值能被正确查找，主要因为resultType的account.User 使用了ognl表达式 Object-Graph Navigation Language对象图导航语言-->
+    <!--类似于JavaScript中的account.User.id最终获取需要的key的值-->
+
+
+    <!--根据queryVo中的某一条件来查询-->
+    <!--传入的参数是queryVo中的:user对象的username,传出的结果是user对象-->
+    <select id="findUserByVo" resultType="account.User" parameterType="account.QueryVo">
+        select * from mybatis_test_01 where username like #{user.username}
+    </select>
+    <!--vo查询一般适用于，根据多个对象提供的数据进行的查询-->
+
+
+
+    <!--模糊名字查询-->       <!--表达式#{xxxx}使用预处理对象PrepareStatement-->
+    <select id="findUserByName" resultType="account.User" parameterType="String">
+        select * from mybatis_test_01 where username like  #{name}
+    </select>
+    <!--或者可以使用
+        select * from mybatis_test_01 where username like '%${value}$%'     写法固定，且必须使用value关键词
+        在调用方法处可以省去输入%%  mapper.findUserByName("keyword")
+        因为并非使用预处理PrepareStatement，并不常用-->
+
+
+    <!--聚合查询，查询用户总数-->
+    <select id="totalUsers" resultType="Integer">
+        select count(id) from mybatis_test_01
+    </select>
+
+    <!--创建用户-->                 <!--parameterType,封装传入的参数设置-->
+    <insert id="createUser" parameterType="account.User">
+        insert into mybatis_test_01 (username,sex,birthday,address) value (#{username},#{sex},#{birthday},#{address})
+        <selectKey keyProperty="id" keyColumn="id" resultType="Integer" order="AFTER">
+            SELECT LAST_INSERT_ID();
+        </selectKey>
+    </insert>
+    <!--关于selectKey：可返回最后插入数据的id值
+        keyColumn：对应mysql中的id列名称
+        order：选择在执行前，或执行后-->
+
+
+    <!--更新-->
+    <update id="updateUser" parameterType="account.User">
+        update mybatis_test_01 set username = #{username},sex = #{sex},birthday = #{birthday},address = #{address} where id = #{id}
+    </update>
+
+    <!--删除-->       <!-- where id = #{参数只有一个时占位符名称可随意！}-->
+    <update id="deleteUser" parameterType="Integer">
+        delete from mybatis_test_01 where id = #{id}
+    </update>
+
+</mapper>

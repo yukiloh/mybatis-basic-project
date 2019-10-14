@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.IAccountDao">
+
+    <resultMap id="userMapper" type="account">
+        <id property="id" column="id"/>
+        <result property="uid" column="uid" />
+        <result property="money" column="money"/>
+        <!--select就是指定另一个方法作为结果-->
+        <!--        <association property="user" column="uid" select="dao.IUserDao.findUserById"/>-->
+    </resultMap>
+
+    <select id="findAllInAccount" resultMap="userMapper">
+        SELECT * FROM mybatis_account
+    </select>
+<!--    u left outer join mybatis_account a on u.`id` = a.`uid`-->
+
+    <select id="findUserById" resultType="user">
+        SELECT * FROM mybatis_test_01 m1,mybatis_account m WHERE m1.`id` = m.`uid`
+    </select>
+
+</mapper>

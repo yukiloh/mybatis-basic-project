@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--动态语句的一些练习,没有注释的在原xml中存在-->
+
+<mapper namespace="dao.IUserDao">
+    <resultMap id="userMapper" type="user">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+    </resultMap>
+    
+    <!--抽取重复sql语句   id为下方include标签所映射的值-->
+    <sql id="selectAll">
+        select * from mybatis_test_01
+    </sql>
+
+    <!--动态查询-->
+    <select id="findUserByCondition" resultType="user" parameterType="user">
+        <include refid="selectAll"></include>
+        <!--使用include标签调用重复的语句 select * from mybatis_test_01-->
+
+        <!--让mybatis自动为sql语句添加where-->
+        <where>
+            <!--指定了参数和结果为account.User下的方法,所以if标签的value = account.User.xxx
+                test为默认,可随意定义   关于if:当条件不满足时跳过该语句-->
+            <if test="id != null and id != 0">
+                id = #{id}
+            </if>
+
+            <if test="username != null and username != '' ">
+                username = #{username}
+            </if>
+        </where>
+    </select>
+
+    <!--动态查询,in(多个id的查询)-->
+    <select id="findUserByInIdentify" resultType="user" parameterType="queryVo">
+        select * from mybatis_test_01
+        <where>
+            <!--identify为传入的参数queryVo中的变量名-->
+            <if test="identify != null and identify.size() > 0">
+            <!--此处的identify同上   open为开始,close为结束    item代表内部传入的每个参数名,需要与下方表达式内相同    separator为分隔符-->
+                <foreach collection="identify"  open="id in(" close=")" item="identify_" separator=",">
+                    <!--实际表达式便是 select * from mybatis_test_01 WHERE id in( ? , ? , ? )  通过#{identify_}进行传值-->
+                    #{identify_}
+                </foreach>
+            </if>
+        </where>
+    </select>
+
+
+
+
+    <select id="findAll" resultType="USer">
+        select * from mybatis_test_01
+    </select>
+
+    <select id="findUserById" resultType="account.User" parameterType="Integer">
+        select * from mybatis_test_01 where id = #{id}
+    </select>
+
+    <select id="findUserByVo" resultType="account.User" parameterType="account.QueryVo">
+        select * from mybatis_test_01 where username like #{user.username}
+    </select>
+
+    <select id="findUserByName" resultType="account.User" parameterType="String">
+        select * from mybatis_test_01 where username like  #{name}
+    </select>
+
+    <select id="totalUsers" resultType="Integer">
+        select count(id) from mybatis_test_01
+    </select>
+
+    <insert id="createUser" parameterType="account.User">
+        insert into mybatis_test_01 (username,sex,birthday,address) value (#{username},#{sex},#{birthday},#{address})
+        <selectKey keyProperty="id" keyColumn="id" resultType="Integer" order="AFTER">
+            SELECT LAST_INSERT_ID();
+        </selectKey>
+    </insert>
+
+    <update id="updateUser" parameterType="account.User">
+        update mybatis_test_01 set username = #{username},sex = #{sex},birthday = #{birthday},address = #{address} where id = #{id}
+    </update>
+
+    <update id="deleteUser" parameterType="Integer">
+        delete from mybatis_test_01 where id = #{id}
+    </update>
+
+</mapper>
