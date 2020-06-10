@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration status="WARN">
+    <Appenders>
+        <Console name="Console" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
+    </Appenders>
+    <Loggers>
+        <Root level="DEBUG">
+            <AppenderRef ref="Console"/>
+        </Root>
+        <logger name="java.sql" level="DEBUG"/>
+        <logger name="org.apache.ibatis" level="DEBUG"/>
+        <logger name="org.apache.ibatis.logging" level="INFO"/>
+        <logger name="org.apache.ibatis.io" level="INFO"/>
+        <logger name="org.apache.ibatis.datasource.pooled.PooledDataSource" level="INFO"/>
+        <!--下方备用-->
+<!--        <logger name="" level="DEBUG"></logger>-->
+
+
+    </Loggers>
+</Configuration>
+        <!--有关log4j配置可以参考:  https://www.cnblogs.com/new-life/p/9246143.html  -->
