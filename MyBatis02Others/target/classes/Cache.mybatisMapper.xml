@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.IUserDao">
+    <!--2.mapper.xml中,开启映射文件对二级缓存的支持-->
+    <cache/>
+
+
+    <!--3.使语句标签,开启对二级缓存的支持,userCache="true"-->
+    <select id="findUserById" resultType="user" parameterType="Integer" useCache="true">
+        select * from mybatis_user_table where id = #{id}
+    </select>
+
+
+</mapper>

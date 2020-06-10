@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+        PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="dao.IAccountDao">
+
+    <!--定义一个封装Account类与User类的resultMap标签--> <!--本案例在config.xml中已启用typeAliases别名,type省略前缀-->
+    <resultMap id="userMapper" type="account">
+        <!--account下的3个属性的映射(不写不会进行映射,最终返回结果会为null)-->
+        <id property="id" column="id"/>
+        <result property="uid" column="uid" />
+        <result property="money" column="money"/>
+
+        <!--进行一对一的关系映射 属性property为account中的user对象,column为关联的属性.所有属性必须填写,否则返回对象缺失-->
+        <association property="user" column="uid">      <!-- 可选参数,用于指定返回的结果的类型 javaType="user" -->
+            <id property="id" column="id"/>
+            <result property="username" column="username"/>
+            <result property="sex" column="sex"/>
+            <result property="birthday" column="birthday"/>
+            <result property="address" column="address"/>
+        </association>
+    </resultMap>
+
+    <!--定义一个封装User类-->
+    <resultMap id="userMapper2" type="user">
+        <id property="id" column="id"/>
+        <result property="username" column="username"/>
+        <result property="sex" column="sex"/>
+        <result property="birthday" column="birthday"/>
+        <result property="address" column="address"/>
+
+        <!--使用collection标签进行一对多的关系映射
+            属性property为user中的accounts对象,ofType为集合元素的名称-->
+        <collection property="accounts" ofType="account">
+            <id property="id" column="id"/>
+            <result property="uid" column="uid" />
+            <result property="money" column="money"/>
+        </collection>
+    </resultMap>
+
+
+    <!--一对多查询-->
+    <select id="findAllInUser" resultMap="userMapper2">
+        SELECT * FROM mybatis_user_table m1,mybatis_account m WHERE m1.`id` = m.`uid`
+    </select>
+<!--    SELECT * FROM mybatis_user_table m1,mybatis_account m WHERE m1.`id` = m.`uid`-->               <!--查询全部-->
+<!--    SELECT * FROM mybatis_user_table m1 LEFT OUTER JOIN mybatis_account m ON m1.id = m.uid-->      <!--左外联-->
+
+
+    <!--查询单表与多表映射的所有信息-->   <!--查询单表所有:select * from mybatis_account-->
+    <!--没有查询的值返回为null,储存在javabean中-->
+    <select id="findAllInAccount" resultMap="userMapper">
+        SELECT m.id,m.money,m1.username,m1.address,m1.sex FROM mybatis_user_table m1,mybatis_account m WHERE m1.`id` = m.`uid`
+    </select>
+
+    <!--多表查询，使用sql语句，用继承类封装，并在继承类中的toString调用父类的toString提供结果查询   ※不常用-->
+    <select id="findAllInDoubleTable" resultType="accountExtend">
+        SELECT m.*,m1.username,m1.address FROM mybatis_user_table m1,mybatis_account m WHERE m1.`id` = m.`uid`
+    </select>
+    
+
+
+
+
+
+<!--    <select id="findUserById" resultType="account.User" parameterType="Integer">-->
+<!--        select * from mybatis_user_table where id = #{id}-->
+<!--    </select>-->
+
+<!--    <select id="findUserByVo" resultType="account.User" parameterType="account.QueryVo">-->
+<!--        select * from mybatis_user_table where username like #{user.username}-->
+<!--    </select>-->
+
+<!--    <select id="findUserByName" resultType="account.User" parameterType="String">-->
+<!--        select * from mybatis_user_table where username like  #{name}-->
+<!--    </select>-->
+
+<!--    <select id="totalUsers" resultType="Integer">-->
+<!--        select count(id) from mybatis_user_table-->
+<!--    </select>-->
+
+<!--    <insert id="createUser" parameterType="account.User">-->
+<!--        insert into mybatis_user_table (username,sex,birthday,address) value (#{username},#{sex},#{birthday},#{address})-->
+<!--        <selectKey keyProperty="id" keyColumn="id" resultType="Integer" order="AFTER">-->
+<!--            SELECT LAST_INSERT_ID();-->
+<!--        </selectKey>-->
+<!--    </insert>-->
+
+<!--    <update id="updateUser" parameterType="account.User">-->
+<!--        update mybatis_user_table set username = #{username},sex = #{sex},birthday = #{birthday},address = #{address} where id = #{id}-->
+<!--    </update>-->
+
+<!--    <update id="deleteUser" parameterType="Integer">-->
+<!--        delete from mybatis_user_table where id = #{id}-->
+<!--    </update>-->
+
+</mapper>

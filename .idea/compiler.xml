@@ -6,13 +6,13 @@
         <sourceOutputDir name="target/generated-sources/annotations" />
         <sourceTestOutputDir name="target/generated-test-sources/test-annotations" />
         <outputRelativeToContentRoot value="true" />
-        <module name="MyBatis_Project_02_AccountQuery" />
-        <module name="MyBatis_Project_01_QuickStart" />
+        <module name="MyBatis02Others" />
+        <module name="MyBatis01Quickstart" />
       </profile>
     </annotationProcessing>
     <bytecodeTargetLevel>
-      <module name="MyBatis_Project_01_QuickStart" target="12" />
-      <module name="MyBatis_Project_02_AccountQuery" target="12" />
+      <module name="MyBatis01Quickstart" target="8" />
+      <module name="MyBatis02Others" target="8" />
     </bytecodeTargetLevel>
   </component>
 </project>

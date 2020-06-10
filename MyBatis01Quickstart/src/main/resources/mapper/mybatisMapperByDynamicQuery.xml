@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--动态语句的一些练习,没有注释的在原xml中存在-->
+<mapper namespace="com.example.mybatis.quickstart.mapper.xml.IUserMapper">
+  <resultMap id="userMapper" type="user">
+    <id property="id" column="id"/>
+    <result property="username" column="username"/>
+  </resultMap>
+
+  <!--抽取重复sql语句,id为下方<include>标签所映射的值-->
+  <sql id="selectAll">
+    select *
+    from mybatis_user_table
+  </sql>
+
+  <!--动态查询-->
+  <select id="findUserByCondition" resultType="com.example.mybatis.quickstart.entity.User" parameterType="com.example.mybatis.quickstart.entity.User">
+    <!--使用include标签调用重复的语句-->
+    <include refid="selectAll"></include>
+
+    <!--让mybatis自动为sql语句添加where-->
+    <where>
+      <!--
+      if标签:当条件不满足时跳过该语句
+      test属性:默认,可随意定义
+      #{id}会从传入的参数user中获取
+      需要手动传入and,否则无法接上后续语句(有点蠢)
+      -->
+      <if test="id != null and id != 0">
+        id = #{id} and
+      </if>
+
+      <if test="username != null and username != '' ">
+        username like #{username}
+      </if>
+    </where>
+  </select>
+
+  <!--动态查询,in(多个id的查询)-->
+  <select id="findUserByInIdentify" resultType="user" parameterType="com.example.mybatis.quickstart.entity.QueryVo">
+    /*不使用include标签*/
+    select * from mybatis_user_table
+    <where>
+      <!--identify:queryVo中的变量-->
+      <if test="identify != null and identify.size() > 0">
+        <!--open为开始,close为结束,item代表内部传入的每个参数名,需要与下方表达式内相同,separator为分隔符-->
+        <foreach collection="identify" open="id in(" close=")" item="identify_" separator=",">
+          <!--实际表达式便是 select * from mybatis_user_table WHERE id in( ? , ? , ? )  通过#{identify_}进行传值-->
+          #{identify_}
+        </foreach>
+      </if>
+    </where>
+  </select>
+
+  <!--以下为mybatisMapper.xml中的复制内容测试类中没有相关方法提供测试-->
+  <select id="findAll" resultType="USer">
+    select *
+    from mybatis_user_table
+  </select>
+
+  <select id="findUserById" resultType="com.example.mybatis.quickstart.entity.User" parameterType="Integer">
+    select *
+    from mybatis_user_table
+    where id = #{id}
+  </select>
+
+  <select id="findUserByVo" resultType="com.example.mybatis.quickstart.entity.User"
+          parameterType="com.example.mybatis.quickstart.entity.QueryVo">
+    select *
+    from mybatis_user_table
+    where username like #{user.username}
+  </select>
+
+  <select id="findUserByName" resultType="com.example.mybatis.quickstart.entity.User" parameterType="String">
+    select *
+    from mybatis_user_table
+    where username like #{name}
+  </select>
+
+  <select id="totalUsers" resultType="Integer">
+    select count(id)
+    from mybatis_user_table
+  </select>
+
+  <insert id="createUser" parameterType="com.example.mybatis.quickstart.entity.User">
+    insert into mybatis_user_table (username,sex,birthday,address) value (#{username},#{sex},#{birthday},#{address})
+    <selectKey keyProperty="id" keyColumn="id" resultType="Integer" order="AFTER">
+      SELECT LAST_INSERT_ID();
+    </selectKey>
+  </insert>
+
+  <update id="updateUser" parameterType="com.example.mybatis.quickstart.entity.User">
+    update mybatis_user_table
+    set username = #{username},
+        sex      = #{sex},
+        birthday = #{birthday},
+        address  = #{address}
+    where id = #{id}
+  </update>
+
+  <update id="deleteUser" parameterType="Integer">
+    delete
+    from mybatis_user_table
+    where id = #{id}
+  </update>
+
+</mapper>

@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+    PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+    "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<!--namespace,指定所映射的mapper,必须为全限定类名-->
+<!--实际开发中会有多个mapper,因此需要多个配置文件实现crud-->
+<mapper namespace="com.example.mybatis.quickstart.mapper.xml.IUserMapper">
+
+  <!--
+      关于实体类与数据库中,字段名不相同的应对策略
+      可以有2种办法建立映射关系:
+      1.使用sql语句中的as 取别名的方式,因为是底层调用,解析速度快
+        select id as userId,username as username,address as userAddress from mybatis_user_table
+
+      2.使用<resultMap>来映射.
+        其中id为唯一标志(可随意定义)
+        type为对应的实体类POJO(User)的全限定类名
+        此处使用了config.xml的<typeAliases>标签下package别名(指定了account包下的所有POJO)
+  -->
+  <resultMap id="userMapper" type="user">
+
+    <!--id标签需要填写property为实体类中的主键,column为数据库中的字段,或查询语句的别名-->
+    <id property="id" column="id"/>
+
+    <!--result为其他的key-->
+    <result property="username" column="username"/>
+
+    <!--如果还有其他字段则继续添加-->
+  </resultMap>
+
+  <!--查询所有user-->
+  <!--select标签中的id名必须是dao接口类中存在的方法名-->
+  <!--resultType为用于封装的结果集类型,必须为全限定类名(使用反射)-->
+  <!--或者可以在config.xml中配置aliases,使resultMap直接获取别名-->
+  <select id="findAll" resultType="user">
+    select *
+    from mybatis_user_table
+  </select>
+
+  <!--查询单个-->
+  <select id="findUserById" resultType="com.example.mybatis.quickstart.entity.User" parameterType="Integer">
+    select *
+    from mybatis_user_table
+    where id = #{id}
+  </select>
+  <!--#{id}的值能被正确查找，主要因为resultType的account.User中使用了ognl表达式(Object-Graph Navigation Language对象图导航语言)-->
+  <!--类似于JavaScript中的account.User.id最终获取需要的key的值-->
+
+  <!--模糊查询,根据queryVo中的某一条件来查询-->
+  <select id="findUserByVo" resultType="com.example.mybatis.entity.User"
+          parameterType="com.example.mybatis.entity.QueryVo">
+    select *
+    from mybatis_user_table
+    where username like #{user.username}
+  </select>
+
+  <!--模糊查询,根据name-->
+  <select id="findUserByName" resultType="com.example.mybatis.entity.User" parameterType="String">
+    select *
+    from mybatis_user_table
+    where username like #{name}
+  </select>
+
+  <!--
+    或者可以使用
+    select * from mybatis_user_table where username like '%${value}$%'
+    写法固定，且必须使用value关键词
+    在调用方法处可以省去输入%%  mapper.findUserByName("keyword")
+    因为并非使用预处理PrepareStatement，并不常用
+  -->
+
+  <!--聚合查询，查询用户总数-->
+  <select id="totalUsers" resultType="Integer">
+    select count(id)
+    from mybatis_user_table
+  </select>
+
+  <!--创建用户.parameterType,封装传入的参数设置-->
+  <insert id="createUser" parameterType="com.example.mybatis.quickstart.entity.User">
+    insert into mybatis_user_table (username,sex,birthday,address) value (#{username},#{sex},#{birthday},#{address})
+    <selectKey keyProperty="id" keyColumn="id" resultType="Integer" order="AFTER">
+      SELECT LAST_INSERT_ID();
+    </selectKey>
+  </insert>
+  <!--
+  关于selectKey：可返回最后插入数据的id值
+  keyColumn：对应mysql中的id列名称
+  order：选择在执行前，或执行后
+  -->
+
+  <!--更新用户-->
+  <update id="updateUser" parameterType="com.example.mybatis.entity.User">
+    update mybatis_user_table
+    set username = #{username},
+        sex      = #{sex},
+        birthday = #{birthday},
+        address  = #{address}
+    where id = #{id}
+  </update>
+
+  <!--根据id删除用户.where id = #{参数只有一个时占位符名称可随意！}-->
+  <update id="deleteUser" parameterType="Integer">
+    delete
+    from mybatis_user_table
+    where id = #{id}
+  </update>
+</mapper>

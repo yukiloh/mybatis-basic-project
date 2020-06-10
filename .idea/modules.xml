@@ -2,8 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/MyBatis_Project_01_QuickStart/MyBatis_Project_01_QuickStart.iml" filepath="$PROJECT_DIR$/MyBatis_Project_01_QuickStart/MyBatis_Project_01_QuickStart.iml" />
-      <module fileurl="file://$PROJECT_DIR$/MyBatis_Project_02_AccountQuery/MyBatis_Project_02_AccountQuery.iml" filepath="$PROJECT_DIR$/MyBatis_Project_02_AccountQuery/MyBatis_Project_02_AccountQuery.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MyBatis01Quickstart/MyBatis01Quickstart.iml" filepath="$PROJECT_DIR$/MyBatis01Quickstart/MyBatis01Quickstart.iml" />
+      <module fileurl="file://$PROJECT_DIR$/MyBatis02Others/MyBatis02Others.iml" filepath="$PROJECT_DIR$/MyBatis02Others/MyBatis02Others.iml" />
     </modules>
   </component>
 </project>

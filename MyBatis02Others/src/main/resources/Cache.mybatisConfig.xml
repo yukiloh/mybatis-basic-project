@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE configuration
+        PUBLIC "-//mybatis.org//DTD Config 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+
+<configuration>
+
+    <properties resource="jdbcConfig.properties"/>
+
+    <settings>
+        <setting name="logImpl" value="LOG4J2" />
+
+        <!--1.config.xml中,开启mybatis框架对二级缓存的支持-->
+        <!--开启全局mapper的缓存设置，默认为true-->
+        <setting name="cacheEnabled" value="true"/>
+
+    </settings>
+
+    <typeAliases>
+        <typeAlias type="account.User" alias="user"/>
+
+        <package name="account"/>
+    </typeAliases>
+
+    <environments default="mysql">
+        <environment id="mysql">
+            <transactionManager type="JDBC"/>
+            <dataSource type="POOLED">
+
+                <property name="driver" value="${jdbc.driver}"/>
+                <property name="url" value="${jdbc.url}"/>
+                <property name="username" value="${jdbc.user}"/>
+                <property name="password" value="${jdbc.password}"/>
+
+            </dataSource>
+        </environment>
+    </environments>
+
+
+    <mappers>
+        <mapper resource="Cache.mybatisMapper.xml"/>
+    </mappers>
+
+</configuration>
