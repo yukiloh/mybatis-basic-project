@@ -19,14 +19,15 @@ import java.util.Date;
 import java.util.List;
 
 
-//通过注解来演示执行SQL查询
+/**
+ * 通过注解来演示执行SQL查询
+ */
 public class MyBatisTesterByAnnotation {
     private IUserMapper userMapper;
     private IAccountMapper accountMapper;
     private IUserAliasMapper userAliasMapper;
     private SqlSession sqlSession;
     private InputStream resourceAsStream;
-
 
     /**
      * 初始化mybatis

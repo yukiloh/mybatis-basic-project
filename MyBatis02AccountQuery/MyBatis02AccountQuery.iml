@@ -3,11 +3,11 @@
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8">
     <output url="file://$MODULE_DIR$/target/classes" />
     <output-test url="file://$MODULE_DIR$/target/test-classes" />
-    <content url="file://$MODULE_DIR$/../MyBatis02Others">
-      <sourceFolder url="file://$MODULE_DIR$/../MyBatis02Others/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/../MyBatis02Others/src/main/resources" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/../MyBatis02Others/src/test/java" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/../MyBatis02Others/target" />
+    <content url="file://$MODULE_DIR$/../MyBatis02AccountQuery">
+      <sourceFolder url="file://$MODULE_DIR$/../MyBatis02AccountQuery/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/../MyBatis02AccountQuery/src/main/resources" type="java-resource" />
+      <sourceFolder url="file://$MODULE_DIR$/../MyBatis02AccountQuery/src/test/java" isTestSource="true" />
+      <excludeFolder url="file://$MODULE_DIR$/../MyBatis02AccountQuery/target" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />

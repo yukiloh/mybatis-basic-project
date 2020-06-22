@@ -8,6 +8,9 @@
       <list>
         <option value="$PROJECT_DIR$/MyBatis_Project_01_QuickStart/pom.xml" />
         <option value="$PROJECT_DIR$/MyBatis_Project_02_AccountQuery/pom.xml" />
+        <option value="$PROJECT_DIR$/MyBatis01Quickstart/pom.xml" />
+        <option value="$PROJECT_DIR$/MyBatis02Others/pom.xml" />
+        <option value="$PROJECT_DIR$/MyBatis02AccountQuery/pom.xml" />
       </list>
     </option>
   </component>
